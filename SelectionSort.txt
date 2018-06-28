@@ -1,0 +1,153 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Алгоритмы
+{
+    class SelectionSort
+    {
+
+        enum Cases { WORST, BEST, AVERAGE };
+
+        static int[] GenerateArray(int length, Cases cases)
+        {
+            int[] mas = new int[length];
+            Random r = new Random();
+            for (int i = 0; i < mas.Length; i++)
+            {
+                mas[i] = r.Next(0, 300000000);
+            }
+
+
+            if (cases == Cases.WORST)
+            {
+                Array.Sort(mas);
+                mas.Reverse();
+
+                return mas;
+
+            }
+            else if (cases == Cases.BEST)
+            {
+
+                Array.Sort(mas);
+
+                return mas;
+            }
+
+
+            else
+            {
+                return mas;
+            }
+        }
+
+        static int[] ViborSort(int[] mas)
+        {
+            for (int i = 0; i < mas.Length - 1; i++)
+            {
+                //поиск минимального числа
+                int min = i;
+                for (int j = i + 1; j < mas.Length; j++)
+                {
+                    if (mas[j] < mas[min])
+                    {
+                        //min = j;
+                        int temp = mas[min];
+                        mas[min] = mas[i];
+                        mas[i] = temp;
+                    }
+                }
+            }
+
+            return mas;
+        }
+
+        public static bool isArrayCorrectSort(int[] ar, int[] orig)
+        {
+            Array.Sort(orig);
+
+            for (int i = 0; i < ar.Length; i++)
+            {
+                if (ar[i] != orig[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static int[] copyArray(int[] orig)
+        {
+            int[] newArray = new int[orig.Length];
+
+            for (int i = 0; i < orig.Length; i++)
+            {
+                newArray[i] = orig[i];
+            }
+
+            return newArray;
+        }
+
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Введите количество чисел для сортировки: ");
+
+            int N = Convert.ToInt32(Console.ReadLine());
+
+            int[] bestCaseArray = GenerateArray(N, Cases.BEST);
+
+            // копируем созданный массив в копию
+            int[] copyBestCaseArray = copyArray(bestCaseArray);
+
+            System.Diagnostics.Stopwatch Time = new System.Diagnostics.Stopwatch();
+            Time.Start();
+            ViborSort(bestCaseArray);
+            Time.Stop();
+
+            Console.WriteLine("\nВремя сортировки для лучшего случая " + Time.Elapsed.TotalMilliseconds);
+
+            // ПРОВЕРЯЕМ КОРРЕКТНОСТЬ СОРТИРОВКИ
+            if (isArrayCorrectSort(bestCaseArray, copyBestCaseArray))
+            {
+                Console.WriteLine("CORRECT");
+            }
+            else
+            {
+                Console.WriteLine("INCORRECT");
+            }
+
+
+            int[] averageCaseArray = GenerateArray(N, Cases.WORST);
+
+           
+            Time.Start();
+            ViborSort(averageCaseArray);
+            Time.Stop();
+
+            Console.WriteLine("\nВремя сортировки для среднего случая " + Time.Elapsed.TotalMilliseconds);
+
+   
+
+            int[] worstCaseArray = GenerateArray(N, Cases.AVERAGE);
+
+            
+            Time.Start();
+            ViborSort(worstCaseArray);
+            Time.Stop();
+
+
+            Console.WriteLine("\nВремя сортировки для худшего случая " + Time.Elapsed.TotalMilliseconds); ;
+
+          
+
+
+            Console.ReadLine();
+
+        }
+    }
+}
